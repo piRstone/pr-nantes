@@ -1,0 +1,27 @@
+.marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  width: 38px;
+  box-sizing: border-box;
+  font-size: 14px;
+  font-weight: 700;
+  color: rgb(28, 57, 223);
+  border-radius: 10px;
+  border: 3px solid rgb(28, 57, 223);
+  background-color: rgb(240, 242, 255);
+  padding-top: 3px;
+}
+
+.marker.warning {
+  color: rgb(238, 141, 15);
+  border: 3px solid rgb(238, 141, 15);
+  background-color: rgb(255, 245, 233);
+}
+
+.marker.danger {
+  color: rgb(238, 15, 15);
+  border: 3px solid rgb(238, 15, 15);
+  background-color: rgb(252, 232, 232);
+}
