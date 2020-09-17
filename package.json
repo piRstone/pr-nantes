@@ -2,6 +2,7 @@
   "name": "pr-nantes",
   "version": "1.0.0",
   "private": true,
+  "homepage": "https://pr-nantes.pirstone.com",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
