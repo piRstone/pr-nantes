@@ -45,6 +45,12 @@
   background-color: rgb(252, 232, 232);
 }
 
+.popup-count.invalid {
+  color: rgb(122, 122, 122);
+  border: 3px solid rgb(122, 122, 122);
+  background-color: rgb(247, 247, 247);
+}
+
 .popup-informations {
   display: flex;
   flex-direction: column;

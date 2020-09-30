@@ -5,26 +5,37 @@ import './popup.css';
 function Popup({ data, visible, onClick }) {
   if (!data) return <div className="popup-wrapper"></div>;
 
-  const { grp_nom, grp_disponible, grp_exploitation } = data.fields;
+  const { grp_nom, grp_disponible, grp_exploitation, grp_statut } = data.fields;
+  let count = grp_disponible;
 
   const wrapperClassName = `popup-wrapper ${visible ? 'visible' : ''}`;
 
-  const countClassName = `popup-count ${
-    grp_disponible === 0 ? 'danger' : grp_disponible < 10 ? 'warning' : ''
+  let countClassName = `popup-count ${
+    count === 0 ? 'danger' : count < 10 ? 'warning' : ''
   }`;
 
   let countSentence;
-  if (grp_disponible === 0) {
+  if (count === 0) {
     countSentence = 'Aucune place disponible';
-  } else if (grp_disponible === 1) {
+  } else if (count === 1) {
     countSentence = '1 place disponible';
   } else {
-    countSentence = `${grp_disponible} places disponibles`;
+    countSentence = `${count} places disponibles`;
+  }
+
+  if (grp_statut === 0) {
+    countSentence = 'Comptage hors service';
+    count = 'X';
+    countClassName += ' invalid';
+  } else if (grp_statut === 1) {
+    countSentence = 'Parking fermé';
+    count = 'X';
+    countClassName = 'popup-count danger';
   }
 
   return (
     <div className={wrapperClassName} onClick={onClick}>
-      <div className={countClassName}>{grp_disponible}</div>
+      <div className={countClassName}>{count}</div>
       <div className="popup-informations">
         <h3 className="popup-park-name">{grp_nom}</h3>
         <p className="">{countSentence}</p>
