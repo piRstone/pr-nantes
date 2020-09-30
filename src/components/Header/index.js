@@ -25,7 +25,7 @@ function Header({ data, refresh, isLoading }) {
     <div className="header-wrapper">
       <header>
         <h1 className="header-title">P+R Nantes</h1>
-        <p className="header-version">v1.0.0</p>
+        <p className="header-version">v1.1.0</p>
       </header>
       {timestamp && (
         <div className="header-timestamp-wrapper">
