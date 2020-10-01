@@ -10,14 +10,17 @@ import Popup from './components/Popup';
 function App() {
   const [map, setMap] = useState(null);
   const [data, setData] = useState([]);
+  const [allParks, setAllParks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [popupData, setPopupData] = useState(undefined);
   const [showPopup, setShowPopup] = useState(false);
+  const [showAllParks, setShowAllParks] = useState(true);
 
   const mapContainer = useRef();
 
   // Init
   useEffect(() => {
+    console.log(navigator.platform);
     const initMap = ({ setMap, mapContainer }) => {
       const map = new mapboxgl.Map({
         container: mapContainer.current,
@@ -29,8 +32,23 @@ function App() {
       map.on('load', () => {
         setMap(map);
         map.resize();
+        map.dragRotate.disable();
+
+        // Declare park symbol
+        map.loadImage(process.env.PUBLIC_URL + '/img/parking-symbol@3x.png', (error, image) => {
+          if (error) throw error;
+          map.addImage('parking-symbol', image);
+        });
+
+        // Handle parks symbols clicks
+        map.on('click', 'all-parks', handleParkSymbolClick);
       });
     };
+
+    const storedShowAllParks = localStorage.getItem('showAllParks');
+    if (storedShowAllParks) {
+      setShowAllParks(storedShowAllParks);
+    }
 
     if (!map) initMap({ setMap, mapContainer });
 
@@ -55,11 +73,11 @@ function App() {
     [popupData]
   );
 
-  // Display points on map
+  // Display real time data on map
   useEffect(() => {
     if (map && data.length) {
-      data.forEach((point) => {
-        if (point.geometry) {
+      data.forEach(point => {
+        if (point.fields?.location) {
           const places = point.fields.grp_disponible;
 
           const el = document.createElement('div');
@@ -71,20 +89,88 @@ function App() {
           const markerNode = document.createElement('div');
           ReactDOM.render(<Marker data={point} onClick={handlePointClick} />, markerNode);
 
+          const location = point.fields.location;
+
           new mapboxgl.Marker({ element: markerNode })
-            .setLngLat(point.geometry.coordinates)
+            .setLngLat([location[1], location[0]])
             .addTo(map);
         }
       });
     }
   }, [map, data, handlePointClick]);
 
+  // Display all parks on map
+  useEffect(() => {
+    if (map && allParks.length) {
+      let source = {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        }
+      };
+
+      allParks.forEach(point => {
+        if (point.fields?.location) {
+          const location = point.fields.location;
+          const coordinates = [location[1], location[0]];
+
+          const feature = {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates
+            },
+            properties: {
+              name: point.fields.nom_complet,
+              ...point.fields
+            }
+          }
+
+          source.data.features.push(feature);
+        }
+      });
+
+      map.addSource('all-parks-source', source);
+      map.addLayer({
+        id: 'all-parks',
+        type: 'symbol',
+        source: 'all-parks-source',
+        layout: {
+          'icon-image': 'parking-symbol',
+          'icon-size': 0.25
+        },
+      });
+
+      // Set visibility according to user choice
+      const visibility = showAllParks === 'true' ? 'visible' : 'none';
+      map.setLayoutProperty('all-parks', 'visibility', visibility);
+    }
+  }, [map, allParks]);
+
   const getData = () => {
-    const url =
+    setIsLoading(true);
+
+    // Get all parks of Nantes
+    const allParksUrl =
+      'https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_parcs-relais-nantes-metropole&q=&rows=100&facet=libtype&facet=commune&facet=service_velo&facet=autres_service_mob_prox&facet=conditions_d_acces&facet=exploitant';
+
+    fetch(allParksUrl)
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setAllParks(result.records);
+        },
+        (error) => {
+          console.log('Error: ', error);
+        }
+      );
+
+    // Get parks with real time places numbers
+    const realTimeUrl =
       'https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_parcs-relais-nantes-metropole-disponibilites&q=&rows=30&facet=grp_nom&facet=grp_statut';
 
-    setIsLoading(true);
-    fetch(url)
+    fetch(realTimeUrl)
       .then((res) => res.json())
       .then(
         (result) => {
@@ -97,6 +183,21 @@ function App() {
         }
       );
   };
+
+  const toggleAllParks = () => {
+    const visibility = map.getLayoutProperty('all-parks', 'visibility');
+    map.setLayoutProperty(
+      'all-parks',
+      'visibility',
+      visibility === 'none' ? 'visible' : 'none'
+    );
+    localStorage.setItem('showAllParks', visibility === 'none' ? true : false);
+  }
+
+  const handleParkSymbolClick = e => {
+    console.log(e);
+    console.log(e.features[0]);
+  }
 
   return (
     <div className="App">
