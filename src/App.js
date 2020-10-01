@@ -34,11 +34,14 @@ function App() {
         map.resize();
         map.dragRotate.disable();
 
-        // Declare park symbol
-        map.loadImage(process.env.PUBLIC_URL + '/img/parking-symbol@3x.png', (error, image) => {
-          if (error) throw error;
-          map.addImage('parking-symbol', image);
-        });
+        // Load and declare park symbol
+        map.loadImage(
+          process.env.PUBLIC_URL + '/img/parking-symbol@3x.png',
+          (error, image) => {
+            if (error) throw error;
+            map.addImage('parking-symbol', image);
+          }
+        );
 
         // Handle parks symbols clicks
         map.on('click', 'all-parks', handleParkSymbolClick);
@@ -76,7 +79,7 @@ function App() {
   // Display real time data on map
   useEffect(() => {
     if (map && data.length) {
-      data.forEach(point => {
+      data.forEach((point) => {
         if (point.fields?.location) {
           const places = point.fields.grp_disponible;
 
@@ -87,7 +90,10 @@ function App() {
           el.innerText = places;
 
           const markerNode = document.createElement('div');
-          ReactDOM.render(<Marker data={point} onClick={handlePointClick} />, markerNode);
+          ReactDOM.render(
+            <Marker data={point} onClick={handlePointClick} />,
+            markerNode
+          );
 
           const location = point.fields.location;
 
@@ -106,11 +112,11 @@ function App() {
         type: 'geojson',
         data: {
           type: 'FeatureCollection',
-          features: []
-        }
+          features: [],
+        },
       };
 
-      allParks.forEach(point => {
+      allParks.forEach((point) => {
         if (point.fields?.location) {
           const location = point.fields.location;
           const coordinates = [location[1], location[0]];
@@ -119,13 +125,13 @@ function App() {
             type: 'Feature',
             geometry: {
               type: 'Point',
-              coordinates
+              coordinates,
             },
             properties: {
               name: point.fields.nom_complet,
-              ...point.fields
-            }
-          }
+              ...point.fields,
+            },
+          };
 
           source.data.features.push(feature);
         }
@@ -138,7 +144,7 @@ function App() {
         source: 'all-parks-source',
         layout: {
           'icon-image': 'parking-symbol',
-          'icon-size': 0.25
+          'icon-size': 0.25,
         },
       });
 
@@ -192,17 +198,22 @@ function App() {
       visibility === 'none' ? 'visible' : 'none'
     );
     localStorage.setItem('showAllParks', visibility === 'none' ? true : false);
-  }
+  };
 
-  const handleParkSymbolClick = e => {
+  const handleParkSymbolClick = (e) => {
     console.log(e);
     console.log(e.features[0]);
-  }
+  };
 
   return (
     <div className="App">
       <div ref={mapContainer} className="mapContainer" />
-      <Header data={data} refresh={getData} isLoading={isLoading} />
+      <Header
+        data={data}
+        onRefresh={getData}
+        onClickToggle={toggleAllParks}
+        isLoading={isLoading}
+      />
       <Popup
         data={popupData}
         visible={showPopup}

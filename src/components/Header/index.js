@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedoAlt } from '@fortawesome/free-solid-svg-icons';
 import './header.css';
 
-function Header({ data, refresh, isLoading }) {
+function Header({ data, onRefresh, isLoading }) {
   const [timestamp, setTimestamp] = useState(undefined);
 
   // Set last sync time
@@ -32,7 +32,7 @@ function Header({ data, refresh, isLoading }) {
           <p>Mis à jour aujourd'hui à {timestamp}</p>
           <button
             type="button"
-            onClick={refresh}
+            onClick={onRefresh}
             className="header-refresh-button"
           >
             <FontAwesomeIcon icon={faRedoAlt} color="#616161" spin={isLoading} />
@@ -45,7 +45,7 @@ function Header({ data, refresh, isLoading }) {
 
 Header.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object),
-  refresh: PropTypes.func.isRequired,
+  onRefresh: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired
 }
 
