@@ -12,7 +12,7 @@ import "./Map.css";
 import { AppDataContext } from "./dataProvider";
 import Header from "./components/Header";
 import Marker from "./components/Marker";
-import Popup from "./components/Popup";
+import Popup, { popupTypes } from "./components/Popup";
 import { getAllParks, getRealTimeParks } from "./utils/data";
 
 function Map() {
@@ -69,17 +69,22 @@ function Map() {
 
   const handlePointClick = useCallback(
     (point) => {
-      if (popupData && popupData.fields.idobj === point.fields.idobj) {
-        setShowPopup(false);
+      if (popupData) {
+        const idobj = popupData.data.fields
+          ? popupData.data.fields.idobj
+          : popupData.data.properties.idobj;
+        if (idobj === point.fields.idobj) {
+          setShowPopup(false);
 
-        // Clear data after animation
-        setTimeout(() => {
-          setPopupData(undefined);
-        }, 300);
-        return;
+          // Clear data after animation
+          setTimeout(() => {
+            setPopupData(undefined);
+          }, 300);
+          return;
+        }
       }
 
-      setPopupData(point);
+      setPopupData({ type: popupTypes.realTimeParkRide, data: point });
       setShowPopup(true);
     },
     [popupData]
@@ -202,6 +207,26 @@ function Map() {
   const handleParkSymbolClick = (e) => {
     console.log(e);
     console.log(e.features[0]);
+
+    const point = e.features[0];
+
+    if (popupData) {
+      const idobj = popupData.data.fields
+        ? popupData.data.fields.idobj
+        : popupData.data.properties.idobj;
+      if (idobj === point.properties.idobj) {
+        setShowPopup(false);
+
+        // Clear data after animation
+        setTimeout(() => {
+          setPopupData(undefined);
+        }, 300);
+        return;
+      }
+    }
+
+    setPopupData({ type: popupTypes.freeParkRide, data: point });
+    setShowPopup(true);
   };
 
   return (

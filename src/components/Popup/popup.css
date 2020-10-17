@@ -1,11 +1,8 @@
-.popup-wrapper {
+.popup {
   position: absolute;
   bottom: -100px;
   left: 10px;
   right: 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   border-radius: 15px;
   background-color: #fff;
   padding: 10px;
@@ -13,8 +10,14 @@
   transition: bottom cubic-bezier(0.25, 0.1, 0.37, 1.38) 0.3s;
 }
 
-.popup-wrapper.visible {
+.popup.visible {
   bottom: 50px;
+}
+
+.popup-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .popup-count {
