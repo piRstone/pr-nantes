@@ -1,6 +1,5 @@
 import React, { createContext, useState } from "react";
 import PropTypes from "prop-types";
-import merge from "lodash/merge";
 
 export const AppDataContext = createContext();
 
@@ -11,7 +10,7 @@ const DataProvider = ({ children }) => {
     <AppDataContext.Provider
       value={{
         appData,
-        setAppData: (newData) => setAppData(merge(appData, newData)),
+        setAppData: (newData) => setAppData({ ...appData, ...newData }),
       }}
     >
       {children}

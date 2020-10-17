@@ -7,7 +7,7 @@ import { AppDataContext } from "../../dataProvider";
 
 const LayerSelector = ({ onToggleAllParks }) => {
   const [showPopup, setShowPopup] = useState(false);
-  const { appData, setAppData } = useContext(AppDataContext);
+  const { appData } = useContext(AppDataContext);
 
   return (
     <div className="layer-selector">
@@ -21,10 +21,7 @@ const LayerSelector = ({ onToggleAllParks }) => {
               id="toggle-all-parks"
               type="checkbox"
               checked={appData.showAllParks}
-              onChange={(e) => {
-                setAppData({ showAllParks: e.target.checked });
-                onToggleAllParks();
-              }}
+              onChange={onToggleAllParks}
             />
             <label htmlFor="toggle-all-parks">
               Afficher tous les parkings relais

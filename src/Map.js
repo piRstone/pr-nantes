@@ -58,7 +58,8 @@ function Map() {
 
     const storedShowAllParks = localStorage.getItem("showAllParks");
     if (storedShowAllParks) {
-      setAppData({ showAllParks: storedShowAllParks });
+      const val = storedShowAllParks === "true" ? true : false;
+      setAppData({ showAllParks: val });
     }
 
     if (!map) initMap({ setMap, mapContainer });
@@ -145,20 +146,22 @@ function Map() {
         }
       });
 
-      map.addSource("all-parks-source", source);
-      map.addLayer({
-        id: "all-parks",
-        type: "symbol",
-        source: "all-parks-source",
-        layout: {
-          "icon-image": "parking-symbol",
-          "icon-size": 0.25,
-        },
-      });
+      if (!map.getSource("all-parks-source")) {
+        map.addSource("all-parks-source", source);
+        map.addLayer({
+          id: "all-parks",
+          type: "symbol",
+          source: "all-parks-source",
+          layout: {
+            "icon-image": "parking-symbol",
+            "icon-size": 0.25,
+          },
+        });
 
-      // Set visibility according to user choice
-      const visibility = appData.showAllParks === true ? "visible" : "none";
-      map.setLayoutProperty("all-parks", "visibility", visibility);
+        // Set visibility according to user choice
+        const visibility = appData.showAllParks === true ? "visible" : "none";
+        map.setLayoutProperty("all-parks", "visibility", visibility);
+      }
     }
   }, [map, allParks, appData]);
 
