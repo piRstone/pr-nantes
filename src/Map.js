@@ -13,6 +13,7 @@ import { AppDataContext } from "./dataProvider";
 import Header from "./components/Header";
 import Marker from "./components/Marker";
 import Popup from "./components/Popup";
+import { getAllParks, getRealTimeParks } from "./utils/data";
 
 function Map() {
   const { appData, setAppData } = useContext(AppDataContext);
@@ -28,7 +29,6 @@ function Map() {
 
   // Init
   useEffect(() => {
-    console.log(navigator.platform);
     const initMap = ({ setMap, mapContainer }) => {
       const map = new mapboxgl.Map({
         container: mapContainer.current,
@@ -165,40 +165,26 @@ function Map() {
     }
   }, [map, allParks, appData]);
 
-  const getData = () => {
+  const getData = async () => {
     setIsLoading(true);
 
     // Get all parks of Nantes
-    const allParksUrl =
-      "https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_parcs-relais-nantes-metropole&q=&rows=100&facet=libtype&facet=commune&facet=service_velo&facet=autres_service_mob_prox&facet=conditions_d_acces&facet=exploitant";
-
-    fetch(allParksUrl)
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          setAllParks(result.records);
-        },
-        (error) => {
-          console.log("Error: ", error);
-        }
-      );
+    try {
+      const allParks = await getAllParks();
+      setAllParks(allParks);
+    } catch (e) {
+      console.error(e);
+    }
 
     // Get parks with real time places numbers
-    const realTimeUrl =
-      "https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_parcs-relais-nantes-metropole-disponibilites&q=&rows=30&facet=grp_nom&facet=grp_statut";
+    try {
+      const realTimeParks = await getRealTimeParks();
+      setData(realTimeParks);
+    } catch (e) {
+      console.error(e);
+    }
 
-    fetch(realTimeUrl)
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          setIsLoading(false);
-          setData(result.records);
-        },
-        (error) => {
-          setIsLoading(false);
-          console.log("Error: ", error);
-        }
-      );
+    setIsLoading(false);
   };
 
   const toggleAllParks = () => {
