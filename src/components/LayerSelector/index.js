@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useContext } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
+import "./style.css";
 
-import './style.css';
+import { AppDataContext } from "../../dataProvider";
 
-const LayerSelector = () => {
+const LayerSelector = ({ onToggleAllParks }) => {
   const [showPopup, setShowPopup] = useState(false);
+  const { appData, setAppData } = useContext(AppDataContext);
 
   return (
     <div className="layer-selector">
@@ -14,11 +16,24 @@ const LayerSelector = () => {
       </div>
       {showPopup && (
         <div className="layer-popup">
-          Popup
+          <div>
+            <input
+              id="toggle-all-parks"
+              type="checkbox"
+              checked={appData.showAllParks}
+              onChange={(e) => {
+                setAppData({ showAllParks: e.target.checked });
+                onToggleAllParks();
+              }}
+            />
+            <label htmlFor="toggle-all-parks">
+              Afficher tous les parkings relais
+            </label>
+          </div>
         </div>
       )}
     </div>
   );
-}
+};
 
 export default LayerSelector;
