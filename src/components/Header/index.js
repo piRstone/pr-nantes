@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedoAlt } from '@fortawesome/free-solid-svg-icons';
 import './header.css';
 
+import LayerSelector from '../LayerSelector';
+
 function Header({ data, onRefresh, isLoading }) {
   const [timestamp, setTimestamp] = useState(undefined);
 
@@ -39,6 +41,7 @@ function Header({ data, onRefresh, isLoading }) {
           </button>
         </div>
       )}
+      <LayerSelector />
     </div>
   );
 }

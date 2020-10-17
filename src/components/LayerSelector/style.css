@@ -1,0 +1,34 @@
+.layer-selector {
+  position: relative;
+  float: right;
+}
+
+.layer-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  margin-top: 20px;
+  margin-right: 20px;
+}
+
+.layer-button:active {
+  background-color: #eee;
+}
+
+.layer-icon {
+  color: rgb(107, 107, 107);
+}
+
+.layer-popup {
+  position: absolute;
+  right: 110%;
+  top: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 10px;
+}
