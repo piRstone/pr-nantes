@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedoAlt } from '@fortawesome/free-solid-svg-icons';
 import './header.css';
 
-function Header({ data, refresh, isLoading }) {
+import { AppDataContext } from '../../dataProvider';
+import LayerSelector from '../LayerSelector';
+
+function Header({ data, onRefresh, onToggleAllParks, isLoading }) {
   const [timestamp, setTimestamp] = useState(undefined);
+
+  const { setAppData } = useContext(AppDataContext);
 
   // Set last sync time
   useEffect(() => {
@@ -18,6 +23,7 @@ function Header({ data, refresh, isLoading }) {
       minutes = minutes < 10 ? `0${minutes}` : minutes;
 
       setTimestamp(`${hours}h${minutes}`);
+      setAppData({ count: data.length });
     }
   }, [data]);
 
@@ -32,21 +38,27 @@ function Header({ data, refresh, isLoading }) {
           <p>Mis à jour aujourd'hui à {timestamp}</p>
           <button
             type="button"
-            onClick={refresh}
+            onClick={onRefresh}
             className="header-refresh-button"
           >
-            <FontAwesomeIcon icon={faRedoAlt} color="#616161" spin={isLoading} />
+            <FontAwesomeIcon
+              icon={faRedoAlt}
+              color="#616161"
+              spin={isLoading}
+            />
           </button>
         </div>
       )}
+      <LayerSelector onToggleAllParks={onToggleAllParks} />
     </div>
   );
 }
 
 Header.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object),
-  refresh: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool.isRequired
-}
+  onRefresh: PropTypes.func.isRequired,
+  onToggleAllParks: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+};
 
 export default Header;
