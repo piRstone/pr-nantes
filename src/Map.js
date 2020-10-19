@@ -41,6 +41,7 @@ function Map() {
         setMap(map);
         map.resize();
         map.dragRotate.disable();
+        map.touchZoomRotate.disableRotation();
 
         // Load and declare park symbol
         map.loadImage(
@@ -205,9 +206,6 @@ function Map() {
   };
 
   const handleParkSymbolClick = (e) => {
-    console.log(e);
-    console.log(e.features[0]);
-
     const point = e.features[0];
 
     if (popupData) {
