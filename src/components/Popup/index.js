@@ -19,7 +19,6 @@ function Popup({ data, visible, onClick }) {
 
   const handleNavigationClick = e => {
     e.stopPropagation(); // Prevent closing popup
-    console.log(data);
 
     let location;
     if (data.data.fields) {
