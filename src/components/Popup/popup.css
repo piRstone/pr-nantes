@@ -70,3 +70,27 @@
   margin: 0;
   margin-bottom: 5px;
 }
+
+.navigation-button {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  bottom: 0;
+  right: 0;
+  background-color: rgb(240, 242, 255);
+  border: 3px solid rgb(28, 57, 223);
+  border-radius: 20px;
+  color: rgb(28, 57, 223);
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: bottom cubic-bezier(0.25, 0.1, 0.37, 1.38) 0.3s;
+}
+
+.navigation-button.visible {
+  bottom: 110%;
+}
+
+.navigation-button span {
+  font-weight: bold;
+  margin-left: 5px;
+}

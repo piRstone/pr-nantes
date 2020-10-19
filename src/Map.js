@@ -41,6 +41,7 @@ function Map() {
         setMap(map);
         map.resize();
         map.dragRotate.disable();
+        map.touchZoomRotate.disableRotation();
 
         // Load and declare park symbol
         map.loadImage(
