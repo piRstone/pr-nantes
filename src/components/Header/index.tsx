@@ -1,31 +1,25 @@
-import React, { useEffect, useState, useContext } from 'react';
-import PropTypes from 'prop-types';
+import { useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedoAlt } from '@fortawesome/free-solid-svg-icons';
+import { format } from 'date-fns';
 import './header.css';
 
-import { AppDataContext } from '../../dataProvider';
 import LayerSelector from '../LayerSelector';
+import { RealTimeParkAndRide } from '../../types/RealTimeParkAndRide';
 
-function Header({ data, onRefresh, onToggleAllParks, isLoading }) {
-  const [timestamp, setTimestamp] = useState(undefined);
+type Props = {
+  data: Array<RealTimeParkAndRide>
+  onRefresh: () => void
+  onToggleAllParks: () => void
+  isLoading: boolean
+}
 
-  const { setAppData } = useContext(AppDataContext);
-
-  // Set last sync time
-  useEffect(() => {
-    if (data.length) {
-      const ts = data[0].record_timestamp;
-      const date = new Date(ts);
-
-      const hours = date.getHours();
-      let minutes = date.getMinutes();
-      minutes = minutes < 10 ? `0${minutes}` : minutes;
-
-      setTimestamp(`${hours}h${minutes}`);
-      setAppData({ count: data.length });
-    }
-  }, [data]);
+function Header({ data, onRefresh, onToggleAllParks, isLoading }: Props) {
+  // Last sync time
+  const timestamp = useMemo(
+    () => (data.length ? format(data[0].timestamp, "hh:mm") : ""),
+    [data]
+  );
 
   return (
     <div className="header-wrapper">
@@ -53,12 +47,5 @@ function Header({ data, onRefresh, onToggleAllParks, isLoading }) {
     </div>
   );
 }
-
-Header.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object),
-  onRefresh: PropTypes.func.isRequired,
-  onToggleAllParks: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-};
 
 export default Header;

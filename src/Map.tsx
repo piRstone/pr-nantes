@@ -1,37 +1,42 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-  useContext,
-} from "react";
-import ReactDOM from "react-dom";
+import { useEffect, useState, useRef, useCallback, useContext } from "react";
+import { createRoot } from "react-dom/client";
 import mapboxgl from "mapbox-gl";
 import "./Map.css";
 
 import { AppDataContext } from "./dataProvider";
 import Header from "./components/Header";
 import Marker from "./components/Marker";
-import Popup, { popupTypes } from "./components/Popup";
+import Popup, { PopupDataType } from "./components/Popup";
 import { getAllParks, getRealTimeParks } from "./utils/data";
+import { RealTimeParkAndRide } from "./types/RealTimeParkAndRide";
+import { ParkAndRide } from "./types/ParkAndRide";
+
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_KEY;
 
 function Map() {
   const { appData, setAppData } = useContext(AppDataContext);
 
-  const [map, setMap] = useState(null);
-  const [data, setData] = useState([]);
-  const [allParks, setAllParks] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [popupData, setPopupData] = useState(undefined);
-  const [showPopup, setShowPopup] = useState(false);
+  const [map, setMap] = useState<mapboxgl.Map | null>(null);
+  const [data, setData] = useState<Array<RealTimeParkAndRide>>([]);
+  const [allParks, setAllParks] = useState<Array<ParkAndRide>>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [popupData, setPopupData] = useState<PopupDataType | undefined>(undefined);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
 
-  const mapContainer = useRef();
+  const mapContainer = useRef<string | HTMLElement | null>(null);
 
   // Init
   useEffect(() => {
-    const initMap = ({ setMap, mapContainer }) => {
+    if (!mapContainer.current) return;
+    const initMap = ({
+      setMap,
+      mapContainer,
+    }: {
+      setMap: React.Dispatch<React.SetStateAction<mapboxgl.Map | null>>;
+      mapContainer: React.MutableRefObject<string | HTMLElement | null>;
+    }) => {
       const map = new mapboxgl.Map({
-        container: mapContainer.current,
+        container: mapContainer.current!,
         style: "mapbox://styles/mapbox/streets-v11",
         center: [-1.5543, 47.2107],
         zoom: 10,
@@ -44,13 +49,10 @@ function Map() {
         map.touchZoomRotate.disableRotation();
 
         // Load and declare park symbol
-        map.loadImage(
-          process.env.PUBLIC_URL + "/img/parking-symbol@3x.png",
-          (error, image) => {
-            if (error) throw error;
-            map.addImage("parking-symbol", image);
-          }
-        );
+        map.loadImage("/img/parking-symbol@3x.png", (error, image) => {
+          if (error) throw error;
+          map.addImage("parking-symbol", image);
+        });
 
         // Handle parks symbols clicks
         map.on("click", "all-parks", handleParkSymbolClick);
@@ -66,15 +68,15 @@ function Map() {
     if (!map) initMap({ setMap, mapContainer });
 
     getData();
-  }, []);
+  }, [mapContainer]);
 
   const handlePointClick = useCallback(
-    (point) => {
+    (point: RealTimeParkAndRide, e: React.MouseEvent<HTMLElement>) => {
+      console.log(e)
+      e.preventDefault();
       if (popupData) {
-        const idobj = popupData.data.fields
-          ? popupData.data.fields.idobj
-          : popupData.data.properties.idobj;
-        if (idobj === point.fields.idobj) {
+        const idobj = popupData.park.id
+        if (idobj === point.id) {
           setShowPopup(false);
 
           // Clear data after animation
@@ -85,7 +87,7 @@ function Map() {
         }
       }
 
-      setPopupData({ type: popupTypes.realTimeParkRide, data: point });
+      setPopupData({ park: point, type: 'RealTimeParkAndRide' });
       setShowPopup(true);
     },
     [popupData]
@@ -94,26 +96,27 @@ function Map() {
   // Display real time data on map
   useEffect(() => {
     if (map && data.length) {
-      data.forEach((point) => {
-        if (point.fields?.location) {
-          const places = point.fields.grp_disponible;
+      data.forEach((park) => {
+        if (park.geometry) {
+          const spots = park.availableSpots;
 
           const el = document.createElement("div");
           el.className = `marker ${
-            places === 0 ? "danger" : places < 10 ? "warning" : ""
+            spots === 0 ? "danger" : spots < 10 ? "warning" : ""
           }`;
-          el.innerText = places;
+          el.innerText = `${spots}`;
 
           const markerNode = document.createElement("div");
-          ReactDOM.render(
-            <Marker data={point} onClick={handlePointClick} />,
-            markerNode
+          const root = createRoot(markerNode);
+          root.render(
+            <Marker realTimeParkAndRide={park} onClick={(e: React.MouseEvent<HTMLElement>) => handlePointClick(park, e)} />
           );
 
-          const location = point.fields.location;
-
           new mapboxgl.Marker({ element: markerNode })
-            .setLngLat([location[1], location[0]])
+            .setLngLat([
+              park.geometry.coordinates[0],
+              park.geometry.coordinates[1],
+            ])
             .addTo(map);
         }
       });
@@ -123,34 +126,29 @@ function Map() {
   // Display all parks on map
   useEffect(() => {
     if (map && allParks.length) {
-      let source = {
+      const source = {
         type: "geojson",
         data: {
           type: "FeatureCollection",
-          features: [],
+          features: allParks.map((park) => {
+            const coordinates = park.geometry.coordinates;
+
+            const feature = {
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates,
+              },
+              properties: {
+                ...park,
+                name: park.name,
+              },
+            };
+
+            return feature;
+          }),
         },
       };
-
-      allParks.forEach((point) => {
-        if (point.fields?.location) {
-          const location = point.fields.location;
-          const coordinates = [location[1], location[0]];
-
-          const feature = {
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates,
-            },
-            properties: {
-              name: point.fields.nom_complet,
-              ...point.fields,
-            },
-          };
-
-          source.data.features.push(feature);
-        }
-      });
 
       if (!map.getSource("all-parks-source")) {
         map.addSource("all-parks-source", source);
@@ -201,18 +199,18 @@ function Map() {
       visibility === "none" ? "visible" : "none"
     );
     const show = visibility === "none" ? true : false;
-    localStorage.setItem("showAllParks", show);
+    localStorage.setItem("showAllParks", show ? "true" : "false");
     setAppData({ showAllParks: show });
   };
 
-  const handleParkSymbolClick = (e) => {
+  const handleParkSymbolClick = (e: any) => {
     const point = e.features[0];
 
+    console.log(point)
+
     if (popupData) {
-      const idobj = popupData.data.fields
-        ? popupData.data.fields.idobj
-        : popupData.data.properties.idobj;
-      if (idobj === point.properties.idobj) {
+      const idobj = popupData.park.id;
+      if (idobj === point.properties.id) {
         setShowPopup(false);
 
         // Clear data after animation
@@ -223,7 +221,7 @@ function Map() {
       }
     }
 
-    setPopupData({ type: popupTypes.freeParkRide, data: point });
+    setPopupData({ park: point as ParkAndRide, type: 'ParkAndRide' });
     setShowPopup(true);
   };
 
