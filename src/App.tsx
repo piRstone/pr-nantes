@@ -1,7 +1,5 @@
-import React from 'react';
-
-import DataProvider from "./dataProvider";
-import Map from './Map'
+import DataProvider from './dataProvider';
+import Map from './Map';
 
 const App = () => {
   return (
@@ -11,6 +9,6 @@ const App = () => {
       </div>
     </DataProvider>
   );
-}
+};
 
 export default App;

@@ -1,28 +1,31 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { RealTimeParkAndRide } from '../../types/RealTimeParkAndRide';
 
-const RealTimeParkRidePopup = ({ data }) => {
-  const { grp_nom, grp_disponible, grp_exploitation, grp_statut } = data.fields;
-  let count = grp_disponible;
+type Props = {
+  data: RealTimeParkAndRide;
+};
+
+const RealTimeParkRidePopup = ({ data }: Props) => {
+  const { name, availableSpots, totalSpots, status } = data;
+  let count = `${availableSpots}`;
 
   let countClassName = `popup-count ${
-    count === 0 ? 'danger' : count < 10 ? 'warning' : ''
+    availableSpots === 0 ? 'danger' : availableSpots < 10 ? 'warning' : ''
   }`;
 
   let countSentence;
-  if (count === 0) {
+  if (availableSpots === 0) {
     countSentence = 'Aucune place disponible';
-  } else if (count === 1) {
+  } else if (availableSpots === 1) {
     countSentence = '1 place disponible';
   } else {
     countSentence = `${count} places disponibles`;
   }
 
-  if (grp_statut === 0) {
+  if (status === 0) {
     countSentence = 'Comptage hors service';
     count = 'X';
     countClassName += ' invalid';
-  } else if (grp_statut === 1) {
+  } else if (status === 1) {
     countSentence = 'Parking fermé';
     count = 'X';
     countClassName = 'popup-count danger';
@@ -32,18 +35,14 @@ const RealTimeParkRidePopup = ({ data }) => {
     <div className="popup-wrapper">
       <div className={countClassName}>{count}</div>
       <div className="popup-informations">
-        <h3 className="popup-park-name">{grp_nom}</h3>
+        <h3 className="popup-park-name">{name}</h3>
         <p className="">{countSentence}</p>
         <p>
-          Nombre de places totales : <strong>{grp_exploitation}</strong>
+          Nombre de places totales : <strong>{totalSpots}</strong>
         </p>
       </div>
     </div>
   );
-};
-
-RealTimeParkRidePopup.propTypes = {
-  data: PropTypes.object.isRequired,
 };
 
 export default RealTimeParkRidePopup;
