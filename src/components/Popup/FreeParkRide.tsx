@@ -1,12 +1,11 @@
 import { ParkAndRide } from "../../types/ParkAndRide";
 
 type Props = {
-  data: { properties: ParkAndRide};
+  data: ParkAndRide;
 };
 
 const FreeParkRidePopup = ({ data }: Props) => {
-  console.info("INFO", data);
-  const { name, totalSpots } = data.properties;
+  const { name, totalSpots } = data;
 
   return (
     <div className="popup-wrapper">

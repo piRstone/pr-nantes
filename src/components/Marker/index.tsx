@@ -1,10 +1,11 @@
 import './marker.css';
+
 import { RealTimeParkAndRide } from '../../types/RealTimeParkAndRide';
 
 type Props = {
-  realTimeParkAndRide: RealTimeParkAndRide
-  onClick: () => void
-}
+  realTimeParkAndRide: RealTimeParkAndRide;
+  onClick: (e: React.MouseEvent<HTMLElement>) => void;
+};
 
 function Marker({ realTimeParkAndRide, onClick }: Props) {
   const availableSpots = realTimeParkAndRide.availableSpots

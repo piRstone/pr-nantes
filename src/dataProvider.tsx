@@ -1,5 +1,4 @@
-import { ReactNode, createContext, useState } from "react";
-import PropTypes from "prop-types";
+import { createContext, ReactNode, useState } from "react";
 
 type Context = {
   showAllParks: boolean;
@@ -11,7 +10,7 @@ type ContextType = {
 };
 
 const defaultContextValue = {
-  showAllParks: true,
+  showAllParks: false,
 };
 
 export const AppDataContext = createContext<ContextType>({ appData: defaultContextValue, setAppData: () => {} });
@@ -30,10 +29,6 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </AppDataContext.Provider>
   );
-};
-
-DataProvider.propTypes = {
-  children: PropTypes.node.isRequired,
 };
 
 export default DataProvider;

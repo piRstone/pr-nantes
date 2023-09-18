@@ -1,11 +1,12 @@
-import { useMemo } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRedoAlt } from '@fortawesome/free-solid-svg-icons';
-import { format } from 'date-fns';
 import './header.css';
 
-import LayerSelector from '../LayerSelector';
+import { faRedoAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { format } from 'date-fns';
+import { useMemo } from 'react';
+
 import { RealTimeParkAndRide } from '../../types/RealTimeParkAndRide';
+import LayerSelector from '../LayerSelector';
 
 type Props = {
   data: Array<RealTimeParkAndRide>
@@ -17,7 +18,7 @@ type Props = {
 function Header({ data, onRefresh, onToggleAllParks, isLoading }: Props) {
   // Last sync time
   const timestamp = useMemo(
-    () => (data.length ? format(data[0].timestamp, "hh:mm") : ""),
+    () => (data.length ? format(data[0].timestamp, "HH:mm") : ""),
     [data]
   );
 
@@ -25,7 +26,7 @@ function Header({ data, onRefresh, onToggleAllParks, isLoading }: Props) {
     <div className="header-wrapper">
       <header>
         <h1 className="header-title">P+R Nantes</h1>
-        <p className="header-version">v1.3.0</p>
+        <p className="header-version">v2.0.0</p>
       </header>
       {timestamp && (
         <div className="header-timestamp-wrapper">

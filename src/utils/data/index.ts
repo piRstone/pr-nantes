@@ -6,7 +6,7 @@ import {
   RealTimeParkAndRideResponse,
 } from "../../types/RealTimeParkAndRide";
 
-export const getAllParks = async (): Promise<Array<ParkAndRide>> => {
+export const getAllParks = async (): Promise<Record<string, ParkAndRide>> => {
   const allParksUrl =
     "https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_parcs-relais-nantes-metropole&q=&rows=100&facet=libtype&facet=commune&facet=service_velo&facet=autres_service_mob_prox&facet=conditions_d_acces&facet=exploitant";
 

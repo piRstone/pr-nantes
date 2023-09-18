@@ -1,13 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDirections } from "@fortawesome/free-solid-svg-icons";
 import "./popup.css";
 
-import RealTimeParkRidePopup from "./RealTimeParkRide";
-import FreeParkRidePopup from "./FreeParkRide";
-import { RealTimeParkAndRide } from "../../types/RealTimeParkAndRide";
+import { faDirections } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PropTypes from "prop-types";
+import React from "react";
+
 import { ParkAndRide } from "../../types/ParkAndRide";
+import { RealTimeParkAndRide } from "../../types/RealTimeParkAndRide";
+import FreeParkRidePopup from "./FreeParkRide";
+import RealTimeParkRidePopup from "./RealTimeParkRide";
 
 export type PopupDataType = {
   park: ParkAndRide | RealTimeParkAndRide;
@@ -32,13 +33,14 @@ function Popup({ data, visible, onClick }: Props) {
     e.stopPropagation(); // Prevent closing popup
 
     const coordinates = data.park.geometry.coordinates
+    console.log(coordinates)
     if (coordinates) {
       startNavigation(coordinates[1], coordinates[0]);
     }
   };
 
   const startNavigation = (lat: number, lng: number) => {
-    if (!lat || !lng) {
+    if (lat && lng) {
       window.open(`https://maps.google.com/maps?daddr=${lat},${lng}&amp;ll=`);
     }
   };

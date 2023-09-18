@@ -1,10 +1,11 @@
-import { useState, useContext, useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 import "./style.css";
 
-import { useOnClickOutside } from '../../hooks';
+import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useContext, useRef,useState } from "react";
+
 import { AppDataContext } from "../../dataProvider";
+import { useOnClickOutside } from '../../hooks';
 
 type Props = {
   onToggleAllParks: () => void
