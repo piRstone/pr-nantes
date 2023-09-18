@@ -1,4 +1,4 @@
-import { ParkAndRide, ParkAndRideResponse } from "../types/ParkAndRide";
+import { ParkAndRide, ParkAndRideResponse } from '../types/ParkAndRide'
 
 export const parkAndRideApiToModel = (
   response: ParkAndRideResponse
@@ -13,6 +13,6 @@ export const parkAndRideApiToModel = (
         geometry: cur.geometry,
         timestamp: new Date(cur.record_timestamp),
       },
-    };
-  }, {});
-};
+    }
+  }, {})
+}

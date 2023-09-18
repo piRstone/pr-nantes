@@ -31,8 +31,8 @@ type PkgRecord = {
 }
 
 export type ParkAndRideResponse = {
-  records: Array<PkgRecord>;
-};
+  records: Array<PkgRecord>
+}
 
 export type ParkAndRide = {
   id: string

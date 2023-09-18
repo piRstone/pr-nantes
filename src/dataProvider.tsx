@@ -1,34 +1,32 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useState } from 'react'
 
 type Context = {
-  showAllParks: boolean;
-};
+  showAllParks: boolean
+}
 
 type ContextType = {
   appData: Context
   setAppData: (newData: Partial<Context>) => void
-};
+}
 
 const defaultContextValue = {
   showAllParks: false,
-};
+}
 
-export const AppDataContext = createContext<ContextType>({ appData: defaultContextValue, setAppData: () => {} });
+export const AppDataContext = createContext<ContextType>({
+  appData: defaultContextValue,
+  setAppData: () => {},
+})
 
 const DataProvider = ({ children }: { children: ReactNode }) => {
-  const [appData, setAppData] = useState<Context>(defaultContextValue);
+  const [appData, setAppData] = useState<Context>(defaultContextValue)
 
   const value: ContextType = {
     appData,
-    setAppData: (newData: Partial<Context>) =>
-      setAppData({ ...appData, ...newData }),
-  };
+    setAppData: (newData: Partial<Context>) => setAppData({ ...appData, ...newData }),
+  }
 
-  return (
-    <AppDataContext.Provider value={value}>
-      {children}
-    </AppDataContext.Provider>
-  );
-};
+  return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>
+}
 
-export default DataProvider;
+export default DataProvider

@@ -1,11 +1,11 @@
-import { ParkAndRide } from "../../types/ParkAndRide";
+import { ParkAndRide } from '../../types/ParkAndRide'
 
 type Props = {
-  data: ParkAndRide;
-};
+  data: ParkAndRide
+}
 
 const FreeParkRidePopup = ({ data }: Props) => {
-  const { name, totalSpots } = data;
+  const { name, totalSpots } = data
 
   return (
     <div className="popup-wrapper">
@@ -17,7 +17,7 @@ const FreeParkRidePopup = ({ data }: Props) => {
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default FreeParkRidePopup;
+export default FreeParkRidePopup

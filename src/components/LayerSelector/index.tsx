@@ -1,22 +1,24 @@
-import "./style.css";
+import './style.css'
 
-import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useRef,useState } from "react";
+import { faLayerGroup } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useContext, useRef, useState } from 'react'
 
-import { AppDataContext } from "../../dataProvider";
-import { useOnClickOutside } from '../../hooks';
+import { AppDataContext } from '../../dataProvider'
+import { useOnClickOutside } from '../../hooks'
 
 type Props = {
   onToggleAllParks: () => void
-};
+}
 
 const LayerSelector = ({ onToggleAllParks }: Props) => {
-  const [showPopup, setShowPopup] = useState(false);
-  const { appData } = useContext(AppDataContext);
+  const [showPopup, setShowPopup] = useState(false)
+  const { appData } = useContext(AppDataContext)
 
-  const popupRef = useRef(null);
-  useOnClickOutside(popupRef, () => { setShowPopup(false) });
+  const popupRef = useRef(null)
+  useOnClickOutside(popupRef, () => {
+    setShowPopup(false)
+  })
 
   return (
     <div ref={popupRef} className="layer-selector">
@@ -40,7 +42,7 @@ const LayerSelector = ({ onToggleAllParks }: Props) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default LayerSelector;
+export default LayerSelector

@@ -1,6 +1,8 @@
-import { RealTimeParkAndRide, RealTimeParkAndRideResponse } from '../types/RealTimeParkAndRide';
+import { RealTimeParkAndRide, RealTimeParkAndRideResponse } from '../types/RealTimeParkAndRide'
 
-export const realTimeParkAndRideApiToModel = (response: RealTimeParkAndRideResponse): Array<RealTimeParkAndRide> => {
+export const realTimeParkAndRideApiToModel = (
+  response: RealTimeParkAndRideResponse
+): Array<RealTimeParkAndRide> => {
   return response.records.map((park) => ({
     id: park.fields.idobj,
     name: park.fields.grp_nom,

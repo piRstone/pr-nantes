@@ -1,12 +1,12 @@
 import { ParkAndRide } from '../types/ParkAndRide'
 
 export type PointProperties = {
-  id: string;
-  name: string;
-  totalSpots: number;
-  geometry: string;
-  timestamp: string;
-};
+  id: string
+  name: string
+  totalSpots: number
+  geometry: string
+  timestamp: string
+}
 
 const propertiesToPoint = (properties: PointProperties): ParkAndRide => {
   return {
@@ -15,7 +15,7 @@ const propertiesToPoint = (properties: PointProperties): ParkAndRide => {
     totalSpots: properties.totalSpots,
     geometry: JSON.parse(properties.geometry),
     timestamp: new Date(properties.timestamp),
-  };
-};
+  }
+}
 
 export default propertiesToPoint

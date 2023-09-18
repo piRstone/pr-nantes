@@ -1,5 +1,5 @@
-import DataProvider from './dataProvider';
-import Map from './Map';
+import DataProvider from './dataProvider'
+import Map from './Map'
 
 const App = () => {
   return (
@@ -8,7 +8,7 @@ const App = () => {
         <Map />
       </div>
     </DataProvider>
-  );
-};
+  )
+}
 
-export default App;
+export default App

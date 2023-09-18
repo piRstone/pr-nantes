@@ -20,8 +20,8 @@ type PkgRecord = {
 }
 
 export type RealTimeParkAndRideResponse = {
-  records: Array<PkgRecord>;
-};
+  records: Array<PkgRecord>
+}
 
 export type RealTimeParkAndRide = {
   id: string
