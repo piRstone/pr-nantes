@@ -1,11 +1,11 @@
 import { Point } from 'geojson'
 
-type PkgFields = {
+export type RealTimeParkingFields = {
   grp_complet: boolean
   grp_identifiant: string
   disponibilite: number
   grp_nom: string
-  location: [string, string]
+  location: [number, number]
   grp_status: number
   idobj: string
   grp_exploitation: number
@@ -14,7 +14,7 @@ type PkgFields = {
 }
 
 type PkgRecord = {
-  fields: PkgFields
+  fields: RealTimeParkingFields
   geometry: Point
   record_timestamp: string
 }

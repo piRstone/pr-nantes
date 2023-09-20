@@ -6,13 +6,16 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 import { ParkAndRide } from '../../types/ParkAndRide'
+import { RealTimePublicParking } from '../../types/PublicParking'
 import { RealTimeParkAndRide } from '../../types/RealTimeParkAndRide'
 import FreeParkRidePopup from './FreeParkRide'
 import RealTimeParkRidePopup from './RealTimeParkRide'
+import RealTimePublicParkingPopup from './RealTimePublicParking'
 
 export type PopupDataType = {
-  park: ParkAndRide | RealTimeParkAndRide
-  type: 'ParkAndRide' | 'RealTimeParkAndRide'
+  parkAndRide?: ParkAndRide
+  realTimeParkAndRide?: RealTimeParkAndRide
+  realTimePublicParking?: RealTimePublicParking
 }
 
 type Props = {
@@ -30,10 +33,18 @@ function Popup({ data, visible, onClick }: Props) {
   const handleNavigationClick = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation() // Prevent closing popup
 
-    const coordinates = data.park.geometry.coordinates
-    console.log(coordinates)
-    if (coordinates) {
-      startNavigation(coordinates[1], coordinates[0])
+    let location: [number, number] | undefined
+    if (data.parkAndRide !== undefined) {
+      const coordinates = data.parkAndRide.geometry.coordinates
+      location = [coordinates[1], coordinates[0]]
+    } else if (data.realTimeParkAndRide !== undefined) {
+      const coordinates = data.realTimeParkAndRide.geometry.coordinates
+      location = [coordinates[1], coordinates[0]]
+    } else if (data.realTimePublicParking?.location) {
+      location = data.realTimePublicParking!.location!
+    }
+    if (location) {
+      startNavigation(location[0], location[1])
     }
   }
 
@@ -49,10 +60,11 @@ function Popup({ data, visible, onClick }: Props) {
         <FontAwesomeIcon icon={faDirections} color="rgb(28, 57, 223)" />
         <span>Y aller</span>
       </div>
-      {data?.type === 'RealTimeParkAndRide' && (
-        <RealTimeParkRidePopup data={data.park as RealTimeParkAndRide} />
+      {data?.realTimeParkAndRide && <RealTimeParkRidePopup data={data.realTimeParkAndRide} />}
+      {data?.realTimePublicParking && (
+        <RealTimePublicParkingPopup data={data.realTimePublicParking} />
       )}
-      {data?.type === 'ParkAndRide' && <FreeParkRidePopup data={data.park as ParkAndRide} />}
+      {data?.parkAndRide && <FreeParkRidePopup data={data.parkAndRide} />}
     </div>
   )
 }

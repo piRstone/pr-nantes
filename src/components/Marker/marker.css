@@ -1,4 +1,5 @@
 .marker {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,27 +8,57 @@
   box-sizing: border-box;
   font-size: 14px;
   font-weight: 700;
-  color: rgb(28, 57, 223);
+  color: var(--blue);
   border-radius: 10px;
-  border: 3px solid rgb(28, 57, 223);
-  background-color: rgb(240, 242, 255);
+  border: 3px solid var(--blue);
+  background-color: var(--bg-blue);
   padding-top: 3px;
 }
 
 .marker.warning {
-  color: rgb(238, 141, 15);
-  border: 3px solid rgb(238, 141, 15);
-  background-color: rgb(255, 245, 233);
+  color: #ee8d0f;
+  border: 3px solid #ee8d0f;
+  background-color: #fff5e9;
 }
 
 .marker.danger {
-  color: rgb(238, 15, 15);
-  border: 3px solid rgb(238, 15, 15);
-  background-color: rgb(252, 232, 232);
+  color: var(--red);
+  border: 3px solid var(--red);
+  background-color: var(--bg-red);
 }
 
 .marker.invalid {
-  color: rgb(122, 122, 122);
-  border: 3px solid rgb(122, 122, 122);
-  background-color: rgb(247, 247, 247);
+  color: var(--grey);
+  border: 3px solid var(--grey);
+  background-color: var(--bg-grey);
+}
+
+.marker.public-park::after {
+  content: '€';
+  font-size: 8px;
+  line-height: 8px;
+  font-weight: 600;
+  position: absolute;
+  bottom: -8px;
+  right: -10px;
+  padding: 3px 5px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #f39324;
+  border: 2px solid #F39324;
+}
+
+.marker.park-ride::after {
+  content: 'P+R';
+  font-size: 8px;
+  line-height: 8px;
+  font-weight: 600;
+  position: absolute;
+  bottom: -11px;
+  right: -10px;
+  padding: 4px 1px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: var(--blue);
+  border: 2px solid var(--blue);
 }

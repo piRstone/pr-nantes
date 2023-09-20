@@ -11,8 +11,9 @@ import Popup, { PopupDataType } from './components/Popup'
 import { AppDataContext } from './dataProvider'
 import propertiesToPoint, { PointProperties } from './dtos/propertiesToPoint'
 import { ParkAndRide } from './types/ParkAndRide'
+import { RealTimePublicParking } from './types/PublicParking'
 import { RealTimeParkAndRide } from './types/RealTimeParkAndRide'
-import { getAllParks, getRealTimeParks } from './utils/data'
+import { getAllParks, getRealTimeParks, getRealTimePublicParkings } from './utils/data'
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_KEY
 
@@ -22,6 +23,7 @@ function Map() {
   const [map, setMap] = useState<mapboxgl.Map | null>(null)
   const [data, setData] = useState<Array<RealTimeParkAndRide>>([])
   const [allParks, setAllParks] = useState<Record<string, ParkAndRide>>({})
+  const [publicParkings, setPublicParkings] = useState<Array<RealTimePublicParking>>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [popupData, setPopupData] = useState<PopupDataType | undefined>(undefined)
   const [showPopup, setShowPopup] = useState<boolean>(false)
@@ -73,11 +75,11 @@ function Map() {
     getData()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handlePointClick = useCallback(
+  const handleRealTimeParkAndRideClick = useCallback(
     (point: RealTimeParkAndRide, e: React.MouseEvent<HTMLElement>) => {
       e.preventDefault()
-      if (popupData) {
-        const idobj = popupData.park.id
+      if (popupData?.realTimeParkAndRide) {
+        const idobj = popupData.realTimeParkAndRide.id
         if (idobj === point.id) {
           setShowPopup(false)
 
@@ -89,7 +91,29 @@ function Map() {
         }
       }
 
-      setPopupData({ park: point, type: 'RealTimeParkAndRide' })
+      setPopupData({ realTimeParkAndRide: point })
+      setShowPopup(true)
+    },
+    [popupData]
+  )
+
+  const handleRealTimePublicParkingClick = useCallback(
+    (point: RealTimePublicParking, e: React.MouseEvent<HTMLElement>) => {
+      e.preventDefault()
+      if (popupData?.realTimePublicParking) {
+        const idobj = popupData.realTimePublicParking.id
+        if (idobj === point.id) {
+          setShowPopup(false)
+
+          // Clear data after animation
+          setTimeout(() => {
+            setPopupData(undefined)
+          }, 300)
+          return
+        }
+      }
+
+      setPopupData({ realTimePublicParking: point })
       setShowPopup(true)
     },
     [popupData]
@@ -97,31 +121,52 @@ function Map() {
 
   // Display real time data on map
   useEffect(() => {
-    if (map && data.length) {
-      data.forEach((park) => {
-        if (park.geometry) {
-          const spots = park.availableSpots
+    if (map) {
+      if (data.length) {
+        data.forEach((park) => {
+          if (park.geometry) {
+            const markerNode = document.createElement('div')
+            const root = createRoot(markerNode)
+            root.render(
+              <Marker
+                parking={park}
+                onClick={(e: React.MouseEvent<HTMLElement>) =>
+                  handleRealTimeParkAndRideClick(park, e)
+                }
+                type="ParkAndRide"
+              />
+            )
 
-          const el = document.createElement('div')
-          el.className = `marker ${spots === 0 ? 'danger' : spots < 10 ? 'warning' : ''}`
-          el.innerText = `${spots}`
+            new mapboxgl.Marker({ element: markerNode })
+              .setLngLat([park.geometry.coordinates[0], park.geometry.coordinates[1]])
+              .addTo(map)
+          }
+        })
+      }
 
-          const markerNode = document.createElement('div')
-          const root = createRoot(markerNode)
-          root.render(
-            <Marker
-              realTimeParkAndRide={park}
-              onClick={(e: React.MouseEvent<HTMLElement>) => handlePointClick(park, e)}
-            />
-          )
+      if (publicParkings.length) {
+        publicParkings.forEach((parking) => {
+          if (parking.location !== null) {
+            const markerNode = document.createElement('div')
+            const root = createRoot(markerNode)
+            root.render(
+              <Marker
+                parking={parking}
+                onClick={(e: React.MouseEvent<HTMLElement>) =>
+                  handleRealTimePublicParkingClick(parking, e)
+                }
+                type="PublicParking"
+              />
+            )
 
-          new mapboxgl.Marker({ element: markerNode })
-            .setLngLat([park.geometry.coordinates[0], park.geometry.coordinates[1]])
-            .addTo(map)
-        }
-      })
+            new mapboxgl.Marker({ element: markerNode })
+              .setLngLat([parking.location[0], parking.location[1]])
+              .addTo(map)
+          }
+        })
+      }
     }
-  }, [map, data, handlePointClick])
+  }, [map, data, publicParkings, handleRealTimeParkAndRideClick, handleRealTimePublicParkingClick])
 
   // Display all parks on map
   useEffect(() => {
@@ -185,6 +230,13 @@ function Map() {
       console.error(e)
     }
 
+    try {
+      const realTimePublicParkings = await getRealTimePublicParkings()
+      setPublicParkings(realTimePublicParkings)
+    } catch (e) {
+      console.error(e)
+    }
+
     setIsLoading(false)
   }
 
@@ -206,8 +258,8 @@ function Map() {
     ) => {
       const point = e.features![0]
 
-      if (popupData) {
-        const idobj = popupData.park.id
+      if (popupData?.parkAndRide) {
+        const idobj = popupData.parkAndRide.id
         if (point.properties !== null) {
           if (idobj === point.properties.id) {
             setShowPopup(false)
@@ -221,7 +273,7 @@ function Map() {
 
           const park = propertiesToPoint(point.properties as PointProperties)
 
-          setPopupData({ park, type: 'ParkAndRide' })
+          setPopupData({ parkAndRide: park })
           setShowPopup(true)
         }
       }

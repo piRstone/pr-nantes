@@ -1,23 +1,29 @@
 import './marker.css'
 
+import classNames from 'classnames'
+
+import { RealTimePublicParking } from '../../types/PublicParking'
 import { RealTimeParkAndRide } from '../../types/RealTimeParkAndRide'
 
 type Props = {
-  realTimeParkAndRide: RealTimeParkAndRide
+  parking: RealTimeParkAndRide | RealTimePublicParking
+  type: 'ParkAndRide' | 'PublicParking'
   onClick: (e: React.MouseEvent<HTMLElement>) => void
 }
 
-function Marker({ realTimeParkAndRide, onClick }: Props) {
-  const availableSpots = realTimeParkAndRide.availableSpots
-  let count = `${realTimeParkAndRide.availableSpots}`
-  const status = realTimeParkAndRide.status
-  let className = `marker ${availableSpots === 0 ? 'danger' : availableSpots < 10 ? 'warning' : ''}`
+function Marker({ parking, type, onClick }: Props) {
+  const availableSpots = parking.availableSpots
+  let count = `${parking.availableSpots}`
+  const status = parking.status
+  const className = classNames('marker', {
+    warning: availableSpots < 10 && availableSpots > 0,
+    danger: status === 1 || availableSpots === 0,
+    invalid: status === 0,
+    'park-ride': type === 'ParkAndRide',
+    'public-park': type === 'PublicParking',
+  })
 
-  if (status === 0) {
-    className += ' invalid'
-    count = 'X'
-  } else if (status === 1) {
-    className = 'marker danger'
+  if (status === 0 || status === 1) {
     count = 'X'
   }
 
