@@ -11,6 +11,6 @@ export const realTimeParkAndRideApiToModel = (
     totalSpots: park.fields.grp_exploitation,
     geometry: park.geometry,
     status: park.fields.grp_status,
-    timestamp: new Date(park.record_timestamp),
+    timestamp: new Date(park.fields.grp_horodatage),
   }))
 }
