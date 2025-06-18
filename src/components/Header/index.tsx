@@ -23,7 +23,7 @@ function Header({ data, onRefresh, onToggleAllParks, isLoading }: Props) {
     <div className="header-wrapper">
       <header>
         <h1 className="header-title">P+R Nantes</h1>
-        <p className="header-version">v2.0.0</p>
+        <p className="header-version">v2.0.1</p>
       </header>
       {timestamp && (
         <div className="header-timestamp-wrapper">

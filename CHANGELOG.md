@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1] - 2025-06-18
+### Modifié
+- L'heure de mise à jour affichée utilise l'horodatage du parking plutôt que le timestamp de la réponse.
+
+## [2.0.0] - 2023-09-18
+### Ajouté
+- Refonte de l'app pour utiliser Vite
+
 ## [1.3.0] - 2020-10-19
 ### Ajouté
 - Bouton de navigation sur les popups. Lance la navigation native (Google Maps par défaut).
