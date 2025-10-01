@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.1.0] - 2025-10-01
+### Modifié
+- Le texte et le bouton refresh de la barre de mise à jour ont été grossi pour améliorer la lisibilité.
+
 ## [2.0.1] - 2025-06-18
 ### Modifié
 - L'heure de mise à jour affichée utilise l'horodatage du parking plutôt que le timestamp de la réponse.
