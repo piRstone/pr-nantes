@@ -23,11 +23,13 @@ function Header({ data, onRefresh, onToggleAllParks, isLoading }: Props) {
     <div className="header-wrapper">
       <header>
         <h1 className="header-title">P+R Nantes</h1>
-        <p className="header-version">v2.0.1</p>
+        <p className="header-version">v2.1.0</p>
       </header>
       {timestamp && (
         <div className="header-timestamp-wrapper">
-          <p>Mis à jour aujourd'hui à {timestamp}</p>
+          <p>
+            Mis à jour à <strong>{timestamp}</strong>
+          </p>
           <button type="button" onClick={onRefresh} className="header-refresh-button">
             <FontAwesomeIcon icon={faRedoAlt} color="#616161" spin={isLoading} />
           </button>
