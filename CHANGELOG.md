@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.1.1] - 2025-10-07
+### Corrigé
+- Le statut des parkings-relais en temps réel a été corrigé pour afficher leur éventuelle indisponibilité.
+
 ## [2.1.0] - 2025-10-01
 ### Modifié
 - Le texte et le bouton refresh de la barre de mise à jour ont été grossi pour améliorer la lisibilité.

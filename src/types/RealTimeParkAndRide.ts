@@ -6,7 +6,7 @@ type PkgFields = {
   disponibilite: number
   grp_nom: string
   location: [string, string]
-  grp_status: number
+  grp_statut: number
   idobj: string
   grp_exploitation: number
   grp_horodatage: string
